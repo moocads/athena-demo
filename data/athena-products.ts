@@ -10,9 +10,24 @@ export type Product = {
   rating: number;
   reviewCount: number;
   tags: string[];
+  comingSoon?: boolean;
 };
 
 export const featuredProducts: Product[] = [
+  {
+    id: "iced-cappuccino-whey-protein",
+    name: "Iced Cappuccino Flavoured Whey Protein",
+    slug: "/products/iced-cappuccino-whey-protein",
+    description:
+      "Smooth iced cappuccino flavoured whey protein for everyday fitness and recovery.",
+    size: "900 g",
+    price: "$67.99",
+    image: "/images/athena/products/iced-cap-product.jpg",
+    hoverImage: "/images/athena/hero.jpg",
+    rating: 5,
+    reviewCount: 0,
+    tags: ["30 G PROTEIN", "ICED CAPPUCCINO", "ZERO ADDED SUGAR", "GLUTEN FREE"],
+  },
   {
     id: "collagen-peptide",
     name: "Unflavoured Collagen Peptide",
@@ -26,6 +41,7 @@ export const featuredProducts: Product[] = [
     rating: 5,
     reviewCount: 0,
     tags: ["10 G COLLAGEN", "TYPE I & III", "ZERO SUGAR", "GLUTEN FREE"],
+    comingSoon: true,
   },
   {
     id: "cookies-cream-whey-protein",
@@ -40,19 +56,6 @@ export const featuredProducts: Product[] = [
     rating: 5,
     reviewCount: 0,
     tags: ["30 G PROTEIN", "140 CALORIES", "3 G FIBRE", "ZERO ADDED SUGAR"],
-  },
-  {
-    id: "iced-cappuccino-whey-protein",
-    name: "Iced Cappuccino Flavoured Whey Protein",
-    slug: "/products/iced-cappuccino-whey-protein",
-    description:
-      "Smooth iced cappuccino flavoured whey protein for everyday fitness and recovery.",
-    size: "900 g",
-    price: "$67.99",
-    image: "/images/athena/products/iced-cap-product.jpg",
-    hoverImage: "/images/athena/hero.jpg",
-    rating: 5,
-    reviewCount: 0,
-    tags: ["30 G PROTEIN", "ICED CAPPUCCINO", "ZERO ADDED SUGAR", "GLUTEN FREE"],
+    comingSoon: true,
   },
 ];

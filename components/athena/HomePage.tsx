@@ -138,6 +138,9 @@ function ProductCard({ product }: { product: Product }) {
           src={product.image}
           alt={`${product.name} product lifestyle image.`}
         />
+        {product.comingSoon ? (
+          <span className="product-coming-soon">Coming Soon</span>
+        ) : null}
       </a>
       <div className="product-meta">
         <div>
@@ -153,7 +156,13 @@ function ProductCard({ product }: { product: Product }) {
           <span key={tag}>{tag}</span>
         ))}
       </div>
-      <button className="button button--primary product-button">Quick Add</button>
+      <button
+        className="button button--primary product-button"
+        disabled={product.comingSoon}
+        type="button"
+      >
+        {product.comingSoon ? "Coming Soon" : "Quick Add"}
+      </button>
     </article>
   );
 }
