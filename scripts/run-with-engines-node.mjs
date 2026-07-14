@@ -4,51 +4,15 @@
  * When the shell Node is too old (e.g. nvm default 20), re-launches using
  * the matching nvm binary and prepends its bin dir to PATH.
  */
-import {
-  appendFileSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-} from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn, spawnSync } from "node:child_process";
 import { homedir } from "node:os";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const LOG_PATH = join(ROOT, ".cursor/debug-579b69.log");
-const SESSION = "579b69";
 const MIN_MAJOR = 22;
 const MIN_MINOR = 13;
-
-function debugLog(hypothesisId, message, data) {
-  // #region agent log
-  const payload = {
-    sessionId: SESSION,
-    runId: process.env.DEBUG_RUN_ID || "ensure-node",
-    hypothesisId,
-    location: "scripts/run-with-engines-node.mjs",
-    message,
-    data,
-    timestamp: Date.now(),
-  };
-  try {
-    mkdirSync(dirname(LOG_PATH), { recursive: true });
-    appendFileSync(LOG_PATH, JSON.stringify(payload) + "\n");
-  } catch {
-    /* ignore */
-  }
-  fetch("http://127.0.0.1:7278/ingest/deed2be7-59e8-415a-baa5-5050a8557b83", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": SESSION,
-    },
-    body: JSON.stringify(payload),
-  }).catch(() => {});
-  // #endregion
-}
 
 function parseVersion(v) {
   const [major = 0, minor = 0, patch = 0] = String(v)
@@ -110,24 +74,11 @@ const current = process.version;
 const wanted = readNvmrc();
 const alreadyOk = satisfies(current);
 
-debugLog("A", "engines check", {
-  current,
-  wanted,
-  alreadyOk,
-  execPath: process.execPath,
-  arch: process.arch,
-});
-
 let nodeBin = process.execPath;
 let reexec = false;
 
 if (!alreadyOk) {
   const nvmNode = resolveNvmNodeSync(wanted);
-  debugLog("B", "resolve nvm node for engines", {
-    wanted,
-    nvmNode,
-    found: Boolean(nvmNode),
-  });
   if (!nvmNode) {
     console.error(
       `[engines] Need Node >=${MIN_MAJOR}.${MIN_MINOR}.0 (current ${current}).\n` +
@@ -150,13 +101,6 @@ if (!alreadyOk) {
   console.error(`[engines] Switching from ${current} → ${probed}`);
 }
 
-debugLog("A", "launch command", {
-  nodeBin,
-  reexec,
-  args,
-  arch: process.arch,
-});
-
 const env = { ...process.env };
 if (reexec) {
   const binDir = dirname(nodeBin);
@@ -170,7 +114,6 @@ const child = spawn(args[0], args.slice(1), {
 });
 
 child.on("exit", (code, signal) => {
-  debugLog("A", "child exit", { code, signal, reexec, nodeBin });
   if (signal) {
     process.kill(process.pid, signal);
     return;
